@@ -7,12 +7,12 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor
-@Table(name = "like_reviews")
-public class LikeReview extends Timestamped {
+@Table(name = "like_orders")
+public class LikedOrder extends Timestamped {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long likeReviewId;
+    private long likeOrderId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
@@ -21,5 +21,18 @@ public class LikeReview extends Timestamped {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id", nullable = false)
     private Order order;
+
+    @Column(nullable = false)
+    private boolean liked = false;
+
+    public LikedOrder(User user, Order order) {
+        this.user = user;
+        this.order = order;
+        this.liked = false;
+    }
+
+    public void updateLiked() {
+        this.liked = !this.liked;
+    }
 
 }
