@@ -8,10 +8,9 @@ import lombok.Setter;
 
 @Entity
 @Getter
-@Setter
 @Table(name = "reviews")
 @NoArgsConstructor
-public class Review extends Timestamped{
+public class Review extends Timestamped {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
