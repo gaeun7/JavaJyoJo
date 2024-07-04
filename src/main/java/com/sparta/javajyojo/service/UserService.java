@@ -10,9 +10,12 @@ import com.sparta.javajyojo.enums.UserRoleEnum;
 import com.sparta.javajyojo.exception.CustomException;
 import com.sparta.javajyojo.repository.PasswordHistoryRepository;
 import com.sparta.javajyojo.repository.UserRepository;
+import com.sparta.javajyojo.repository.likedOrder.LikedOrderRepository;
+import com.sparta.javajyojo.repository.likedReview.LikedReviewRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -27,9 +30,12 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordHistoryRepository passwordHistoryRepository;
     private final PasswordEncoder passwordEncoder;
+    private final LikedOrderRepository likedOrderRepository;
+    private final LikedReviewRepository likedReviewRepository;
 
     // ADMIN_TOKEN
-    private final String ADMIN_TOKEN = "AAABnvxRVklrnYxKZ0aHgTBcXukeZygoC";
+    @Value("~~~admin")
+    private String ADMIN_TOKEN;
 
     public ProfileResponseDto signUp(SignUpRequestDto requestDto) {
         String username = requestDto.getUsername();
@@ -74,8 +80,14 @@ public class UserService {
         user.logOut();
     }
 
+    @Transactional
     public ProfileResponseDto getProfile(Long userId) {
-        return new ProfileResponseDto(findById(userId));
+        ProfileResponseDto profileResponseDto = new ProfileResponseDto(findById(userId));
+        long ordersLikedCnt = likedOrderRepository.countOrderLikesByUserId(userId);
+        long reviewsLikedCnt = likedReviewRepository.countReviewLikesByUserId(userId);
+        profileResponseDto.updateContentLike(ordersLikedCnt, reviewsLikedCnt);
+
+        return profileResponseDto;
     }
 
     @Transactional
