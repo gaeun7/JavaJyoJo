@@ -1,6 +1,5 @@
 package com.sparta.javajyojo;
 
-import com.sparta.javajyojo.dto.ReviewRequestDto;
 import com.sparta.javajyojo.entity.*;
 import com.sparta.javajyojo.enums.OrderStatus;
 import com.sparta.javajyojo.enums.UserRoleEnum;
@@ -8,7 +7,6 @@ import com.sparta.javajyojo.repository.*;
 import jakarta.annotation.PostConstruct;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
