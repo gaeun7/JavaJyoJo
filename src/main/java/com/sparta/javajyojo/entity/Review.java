@@ -4,7 +4,6 @@ import com.sparta.javajyojo.dto.ReviewRequestDto;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Entity
 @Getter
@@ -26,6 +25,9 @@ public class Review extends Timestamped {
 
     private Long rating;
 
+    @Column(nullable = false)
+    private Long likesCnt = 0L;
+
     public Review(ReviewRequestDto reviewRequestDto, Order order) {
         this.order = order;
         this.userId = order.getUser().getUserId();
@@ -43,6 +45,15 @@ public class Review extends Timestamped {
     public void update(ReviewRequestDto reviewRequestDto) {
         this.review = reviewRequestDto.getReview();
         this.rating = reviewRequestDto.getRating();
+    }
+
+    public Long updateLike(boolean isLike) {
+        if(isLike) {
+            this.likesCnt += 1;
+        } else {
+            this.likesCnt -= 1;
+        }
+        return this.likesCnt;
     }
 
 }
