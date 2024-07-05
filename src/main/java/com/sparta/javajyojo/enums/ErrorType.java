@@ -44,7 +44,12 @@ public enum ErrorType {
     REQUIRES_LOGIN(HttpStatus.LOCKED, "로그인이 필요한 서비스입니다."),
 
     // LIKE
-    CONTENT_OWNER(HttpStatus.NOT_FOUND, "본인의 음식점과 댓글에는 ‘좋아요'를 추가할 수 없습니다.");
+    CONTENT_OWNER(HttpStatus.NOT_FOUND, "본인의 음식점과 댓글에는 ‘좋아요'를 추가할 수 없습니다."),
+
+    // FOLLOW
+    INVALID_FOLLOW_REQUEST(HttpStatus.LOCKED, "자기 자신은 팔로우가 불가능합니다."),
+    ALREADY_FOLLOWING(HttpStatus.BAD_REQUEST, "이미 팔로우한 유저입니다."),
+    NOT_FOUND_FOLLOW(HttpStatus.NOT_FOUND, "팔로우한 유저가 아닙니다.");
 
     private final HttpStatus httpStatus;
     private final String message;
