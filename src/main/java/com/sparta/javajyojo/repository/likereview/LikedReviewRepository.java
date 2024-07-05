@@ -10,5 +10,4 @@ import java.util.Optional;
 
 public interface LikedReviewRepository extends JpaRepository<LikedReview, Long>, LikedReviewRepositoryQuery {
     Optional<LikedReview> findByUserAndReview(User user, Review review);
-
 }
