@@ -33,14 +33,10 @@ public class LikeService {
 
     @Transactional
     public LikeResponseDto updateContentLike(ContentTypeEnum contentType, Long contentId, User user) {
-        switch (contentType) {
-            case ORDER:
-                return updateOrderLike(contentId, user);
-            case REVIEW:
-                return updateReviewLike(contentId, user);
-            default:
-                throw new IllegalArgumentException("지원하지 않은 content 타입입니다: " + contentType);
-        }
+        return switch (contentType) {
+            case ORDER -> updateOrderLike(contentId, user);
+            case REVIEW -> updateReviewLike(contentId, user);
+        };
     }
 
     private LikeResponseDto updateOrderLike(Long contentId, User user) {

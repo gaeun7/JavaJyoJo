@@ -8,8 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 import java.util.Optional;
 
-public interface LikedReviewRepository extends JpaRepository<LikedReview, Long>{
+public interface LikedReviewRepository extends JpaRepository<LikedReview, Long>, LikedReviewRepositoryQuery {
     Optional<LikedReview> findByUserAndReview(User user, Review review);
 
-    List<Review> findLikedReviewsByUser(long userId, int limit);
 }
