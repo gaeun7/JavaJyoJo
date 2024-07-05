@@ -3,11 +3,13 @@ package com.sparta.javajyojo.service;
 import com.sparta.javajyojo.dto.ProfileRequestDto;
 import com.sparta.javajyojo.dto.ProfileResponseDto;
 import com.sparta.javajyojo.dto.SignUpRequestDto;
+import com.sparta.javajyojo.entity.Follow;
 import com.sparta.javajyojo.entity.PasswordHistory;
 import com.sparta.javajyojo.entity.User;
 import com.sparta.javajyojo.enums.ErrorType;
 import com.sparta.javajyojo.enums.UserRoleEnum;
 import com.sparta.javajyojo.exception.CustomException;
+import com.sparta.javajyojo.repository.FollowRepository;
 import com.sparta.javajyojo.repository.PasswordHistoryRepository;
 import com.sparta.javajyojo.repository.UserRepository;
 import com.sparta.javajyojo.repository.likedOrder.LikedOrderRepository;
@@ -32,6 +34,7 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final LikedOrderRepository likedOrderRepository;
     private final LikedReviewRepository likedReviewRepository;
+    private final FollowRepository followRepository;
 
     // ADMIN_TOKEN
     @Value("~~~admin")
@@ -133,6 +136,36 @@ public class UserService {
         return userRepository.findById(id).orElseThrow(
             () -> new CustomException(ErrorType.NOT_FOUND_USER)
         );
+    }
+
+    @Transactional
+    public void followUser(Long followingUserId, User follower) {
+
+        User following = findById(followingUserId);
+
+        if (followingUserId.equals(follower.getUserId())) {
+            throw new CustomException(ErrorType.INVALID_FOLLOW_REQUEST);
+        }
+
+        if (followRepository.findByFollowerAndFollowing(follower, following).isPresent()) {
+            throw new CustomException(ErrorType.ALREADY_FOLLOWING);
+        }
+
+        Follow follow = new Follow(follower, following);
+
+        followRepository.save(follow);
+    }
+
+    @Transactional
+    public void unfollowUser(Long followingUserId, User follower) {
+
+        User following = findById(followingUserId);
+
+        if (followRepository.findByFollowerAndFollowing(follower, following).isEmpty()) {
+            throw new CustomException(ErrorType.NOT_FOUND_FOLLOW);
+        }
+
+        followRepository.delete(followRepository.findByFollowerAndFollowing(follower, following).get());
     }
 
 }
