@@ -8,10 +8,9 @@ import lombok.Setter;
 
 @Entity
 @Getter
-@Setter
 @Table(name = "reviews")
 @NoArgsConstructor
-public class Review extends Timestamped{
+public class Review extends Timestamped {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,6 +25,9 @@ public class Review extends Timestamped{
     private String review;
 
     private Long rating;
+
+    @Column(nullable = false)
+    private Long likesCnt = 0L;
 
     public Review(ReviewRequestDto reviewRequestDto, Order order) {
         this.order = order;
@@ -44,6 +46,15 @@ public class Review extends Timestamped{
     public void update(ReviewRequestDto reviewRequestDto) {
         this.review = reviewRequestDto.getReview();
         this.rating = reviewRequestDto.getRating();
+    }
+
+    public Long updateLike(boolean isLike) {
+        if(isLike) {
+            this.likesCnt += 1;
+        } else {
+            this.likesCnt -= 1;
+        }
+        return this.likesCnt;
     }
 
 }

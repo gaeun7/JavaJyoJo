@@ -13,6 +13,7 @@ import com.sparta.javajyojo.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -29,7 +30,8 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
 
     // ADMIN_TOKEN
-    private final String ADMIN_TOKEN = "AAABnvxRVklrnYxKZ0aHgTBcXukeZygoC";
+    @Value("~~~admin")
+    private String ADMIN_TOKEN;
 
     public ProfileResponseDto signUp(SignUpRequestDto requestDto) {
         String username = requestDto.getUsername();
@@ -51,11 +53,11 @@ public class UserService {
         }
 
         User user = new User(
-            username,
-            password,
-            requestDto.getName(),
-            requestDto.getIntro(),
-            role
+                username,
+                password,
+                requestDto.getName(),
+                requestDto.getIntro(),
+                role
         );
         userRepository.save(user);
 
@@ -97,7 +99,7 @@ public class UserService {
             // 최근 3번 안에 사용한 비밀번호는 사용할 수 없도록 제한
             List<PasswordHistory> recentPasswords = passwordHistoryRepository.findTop3ByUserOrderByChangeDateDesc(user);
             boolean isInPreviousPasswords = recentPasswords.stream()
-                .anyMatch(pw -> passwordEncoder.matches(requestDto.getNewPassword(), String.valueOf(pw)));
+                    .anyMatch(pw -> passwordEncoder.matches(requestDto.getNewPassword(), String.valueOf(pw)));
             if (isInPreviousPasswords) {
                 throw new CustomException(ErrorType.PASSWORD_RECENTLY_USED);
             }
@@ -109,9 +111,9 @@ public class UserService {
         }
 
         user.update(
-            Optional.ofNullable(newEncodePassword),
-            Optional.ofNullable(requestDto.getName()),
-            Optional.ofNullable(requestDto.getIntro())
+                Optional.ofNullable(newEncodePassword),
+                Optional.ofNullable(requestDto.getName()),
+                Optional.ofNullable(requestDto.getIntro())
         );
 
         return new ProfileResponseDto(user);
@@ -119,7 +121,7 @@ public class UserService {
 
     private User findById(Long id) {
         return userRepository.findById(id).orElseThrow(
-            () -> new CustomException(ErrorType.NOT_FOUND_USER)
+                () -> new CustomException(ErrorType.NOT_FOUND_USER)
         );
     }
 

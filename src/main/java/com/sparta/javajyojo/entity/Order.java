@@ -45,6 +45,9 @@ public class Order extends Timestamped {
     @Column(nullable = false)
     private int totalPrice;
 
+    @Column(nullable = false)
+    private Long likesCnt = 0L;
+
     public Order(User user, String deliveryRequest, String address, OrderStatus orderStatus, int totalPrice) {
         this.user = user;
         this.deliveryRequest = deliveryRequest;
@@ -72,5 +75,13 @@ public class Order extends Timestamped {
                 // 주문 상태를 CANCELED 로 변경
                 orderStatus = OrderStatus.CANCELED;
         }
+    }
+    public Long updateLike(boolean isLike) {
+        if(isLike) {
+            this.likesCnt += 1;
+        } else {
+            this.likesCnt -= 1;
+        }
+        return this.likesCnt;
     }
 }
